@@ -19,5 +19,7 @@ jobs:
         distribution: 'zulu'
         cache: maven
         java-package: jdk+fx
+    - name: Check Maven version
+      run: mvn --version
     - name: Build with Maven and JavaFX (Linux)
-      run: mvn clean compile
+      run: mvn clean compile -e -X
