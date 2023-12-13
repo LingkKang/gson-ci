@@ -1,0 +1,23 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches:
+      - "master"
+
+  workflow_dispatch: # Manually trigger CI
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'zulu'
+        cache: maven
+        java-package: jdk+fx
+    - name: Build with Maven and JavaFX (Linux)
+      run: mvn clean compile
