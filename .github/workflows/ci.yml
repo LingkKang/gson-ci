@@ -1,0 +1,41 @@
+name: Run Maven compile
+
+on:
+  push:
+    branches:
+      - "master"
+
+  workflow_dispatch: # Manually trigger CI
+
+env:
+  JAVA_HOME: /usr/lib/jvm/java-21-openjdk-amd64
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Java 21
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openjdk-21-jdk
+          sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-21-openjdk-amd64/bin/java 1
+          sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/java-21-openjdk-amd64/bin/javac 1
+
+      - name: Install Maven 3.9.6
+        run: |
+          wget https://downloads.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
+          tar -xvf apache-maven-3.9.6-bin.tar.gz
+          sudo mv apache-maven-3.9.6 /usr/local/apache-maven
+          rm apache-maven-3.9.6-bin.tar.gz
+          sudo update-alternatives --install /usr/bin/mvn mvn /usr/local/apache-maven/bin/mvn 1
+
+      - name: Check versions
+        run: |
+          java -version
+          javac -version
+          mvn -version
+
+      - name: Build with Maven and JavaFX
+        run: mvn clean compile -e -X
